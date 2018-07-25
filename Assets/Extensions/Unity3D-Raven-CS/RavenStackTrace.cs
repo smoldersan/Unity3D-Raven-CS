@@ -66,7 +66,7 @@ namespace Unity3DRavenCS
             }
             else
             {
-                reg = new Regex(@"[\s*at\s*]*([\w\d\._\-\s\(\),\`]+?)[\s]*\n", RegexOptions.IgnoreCase);
+                reg = new Regex(@"[\s]*(?:at)?[\s]*([\w\d\._\-\s\(\),\`\<\>\+\:]+?)[\s]*\n", RegexOptions.IgnoreCase);
                 matches = reg.Matches(stackTrace);
 
                 BuildFrames(matches, 2);
