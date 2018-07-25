@@ -6,22 +6,22 @@ using Newtonsoft.Json;
 
 namespace Unity3DRavenCS
 {
-	public class RavenStackTrace
-	{
-		public struct RavenFrame
-		{
-			public string filename;
+    public class RavenStackTrace
+    {
+        public struct RavenFrame
+        {
+            public string filename;
             public string function;
-			public int lineno;
-			public int colno;
+            public int lineno;
+            public int colno;
 
-			public RavenFrame(StackFrame frame)
-			{
-				filename = frame.GetFileName();
+            public RavenFrame(StackFrame frame)
+            {
+                filename = frame.GetFileName();
                 function = frame.GetMethod().Name;
-				lineno = frame.GetFileLineNumber();
-				colno = frame.GetFileColumnNumber();
-			}
+                lineno = frame.GetFileLineNumber();
+                colno = frame.GetFileColumnNumber();
+            }
 
             public RavenFrame(string filename, string function, int lineno, int colno)
             {
@@ -30,19 +30,19 @@ namespace Unity3DRavenCS
                 this.lineno = lineno;
                 this.colno = colno;
             }
-		}
+        }
 
         [JsonProperty(PropertyName = "frames")]
         private List<RavenFrame> m_frames = new List<RavenFrame>();
 
-		public RavenStackTrace(Exception exception)
-		{
-			StackTrace stackTrace = new StackTrace(exception, true);
-			foreach (var frame in stackTrace.GetFrames()) 
-			{
-				m_frames.Add(new RavenFrame(frame));
-			}
-		}
+        public RavenStackTrace(Exception exception)
+        {
+            StackTrace stackTrace = new StackTrace(exception, true);
+            foreach (var frame in stackTrace.GetFrames())
+            {
+                m_frames.Add(new RavenFrame(frame));
+            }
+        }
 
         public RavenStackTrace(StackTrace stackTrace)
         {
@@ -87,5 +87,5 @@ namespace Unity3DRavenCS
                 }
             }
         }
-	}
+    }
 }

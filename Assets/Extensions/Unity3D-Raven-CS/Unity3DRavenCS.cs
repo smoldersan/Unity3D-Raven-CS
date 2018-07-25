@@ -7,13 +7,13 @@ using Newtonsoft.Json;
 using ICSharpCode.SharpZipLib.GZip;
 
 namespace Unity3DRavenCS {
-    
-	public class RavenOptionType
-	{
-		public int timeout = 5000;
+
+    public class RavenOptionType
+    {
+        public int timeout = 5000;
         public bool compression = true;
         public int maxConnections = 10;
-	}
+    }
 
     public class SentryConfig
     {
@@ -21,7 +21,7 @@ namespace Unity3DRavenCS {
     }
 
 
-	public class Unity3DRavenCS: MonoBehaviour {
+    public class Unity3DRavenCS: MonoBehaviour {
         public static Unity3DRavenCS instance
         {
             get
@@ -64,8 +64,8 @@ namespace Unity3DRavenCS {
             }
         }
 
-		private DSN m_dsn;
-		private bool m_valid;
+        private DSN m_dsn;
+        private bool m_valid;
         private RavenOptionType m_option;
         private SentryConfig m_sentryConfig;
 
@@ -81,9 +81,9 @@ namespace Unity3DRavenCS {
             }
             m_lastIdx = 0;
         }
-        
-		void Start()
-		{
+
+        void Start()
+        {
         }
 
         void Update()
@@ -116,15 +116,15 @@ namespace Unity3DRavenCS {
         /// <param name="logType"></param>
         /// <param name="tags"></param>
         /// <param name="stackTrace"></param>
-		public void CaptureMessage(string message, LogType logType=LogType.Error, Dictionary<string, string> tags=null, string stackTrace=null)
-		{
-			if (m_valid)
-			{
-				MessagePacket packet = new MessagePacket(m_sentryConfig, message, logType, tags, stackTrace);
+        public void CaptureMessage(string message, LogType logType=LogType.Error, Dictionary<string, string> tags=null, string stackTrace=null)
+        {
+            if (m_valid)
+            {
+                MessagePacket packet = new MessagePacket(m_sentryConfig, message, logType, tags, stackTrace);
 
-				Send(packet.ToJson());
-			}
-		}
+                Send(packet.ToJson());
+            }
+        }
 
         /// <summary>
         /// Capture a message with System.Diagnostics.StackTrace
@@ -148,10 +148,10 @@ namespace Unity3DRavenCS {
         /// </summary>
         /// <param name="exception">Captured exception</param>
         /// <param name="tags"></param>
-		public void CaptureException(Exception exception, Dictionary<string, string> tags = null)
-		{
+        public void CaptureException(Exception exception, Dictionary<string, string> tags = null)
+        {
             CaptureException(exception.Message, new System.Diagnostics.StackTrace(exception, true) , tags);
-		}
+        }
 
         /// <summary>
         /// Send an exception message with stack trace to sentry server.

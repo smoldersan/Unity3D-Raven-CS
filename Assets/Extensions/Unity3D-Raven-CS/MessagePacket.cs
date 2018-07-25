@@ -48,8 +48,8 @@ namespace Unity3DRavenCS
         }
     }
 
-	public class MessagePacket: Packet
-	{
+    public class MessagePacket: Packet
+    {
 #pragma warning disable 0414
         [JsonProperty(PropertyName = "level")]
         private string m_level;
@@ -60,13 +60,13 @@ namespace Unity3DRavenCS
 #pragma warning restore 0414
 
         public MessagePacket(SentryConfig sentryConfig, string message, LogType logType, Dictionary<string, string> tags, string stackTrace): base(sentryConfig, message, tags)
-		{
+        {
             m_level = ToLogLevelFromLogType(logType);
             if (!string.IsNullOrEmpty(stackTrace))
             {
                 m_stacktrace = new RavenStackTrace(stackTrace);
             }
-		}
+        }
 
         public MessagePacket(SentryConfig sentryConfig, string message, LogType logType, Dictionary<string, string> tags, System.Diagnostics.StackTrace stackTrace) : base(sentryConfig, message, tags)
         {
@@ -78,30 +78,30 @@ namespace Unity3DRavenCS
         }
 
         private string ToLogLevelFromLogType(LogType logType)
-		{
-			string logLevel;
-			switch (logType) 
-			{
-			case LogType.Log:
-				logLevel = "info";
-				break;
-			case LogType.Warning:
-				logLevel = "warning";
-				break;
-			case LogType.Error:
-			case LogType.Assert:
-			case LogType.Exception:
-				logLevel = "error";
-				break;
-			default:
-				logLevel = "error";
-				break;
-			}
-			return logLevel;
-		}
-	}
+        {
+            string logLevel;
+            switch (logType)
+            {
+            case LogType.Log:
+                logLevel = "info";
+                break;
+            case LogType.Warning:
+                logLevel = "warning";
+                break;
+            case LogType.Error:
+            case LogType.Assert:
+            case LogType.Exception:
+                logLevel = "error";
+                break;
+            default:
+                logLevel = "error";
+                break;
+            }
+            return logLevel;
+        }
+    }
 
- 
+
     public class ExceptionPacket: Packet
     {
 #pragma warning disable 0414
@@ -125,8 +125,8 @@ namespace Unity3DRavenCS
         }
     }
 
-	public struct ResponsePacket
-	{
-		public string id;
-	}
+    public struct ResponsePacket
+    {
+        public string id;
+    }
 }

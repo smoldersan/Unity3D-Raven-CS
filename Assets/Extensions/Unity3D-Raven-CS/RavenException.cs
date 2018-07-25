@@ -3,8 +3,8 @@ using Newtonsoft.Json;
 
 namespace Unity3DRavenCS
 {
-	public class RavenException
-	{
+    public class RavenException
+    {
 #pragma warning disable 0414
         [JsonProperty(PropertyName = "stacktrace")]
         private RavenStackTrace m_stacktrace;
@@ -15,7 +15,7 @@ namespace Unity3DRavenCS
 #pragma warning restore 0414
 
         public RavenException(Exception exception)
-		{
+        {
             m_stacktrace = new RavenStackTrace(exception);
             m_value = exception.Message;
             m_type = exception.GetType().ToString();
