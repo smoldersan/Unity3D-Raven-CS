@@ -15,6 +15,11 @@ namespace Unity3DRavenCS {
         public int maxConnections = 10;
 	}
 
+    public class SentryConfig
+    {
+        public string release = "0.0.0";
+    }
+
 
 	public class Unity3DRavenCS: MonoBehaviour {
         public static Unity3DRavenCS instance
@@ -31,7 +36,7 @@ namespace Unity3DRavenCS {
         }
         private static Unity3DRavenCS m_instance;
 
-        public static void NewInstance(string dsn, RavenOptionType option=null)
+        public static void NewInstance(string dsn, SentryConfig sentryConfig=null, RavenOptionType option=null)
         {
             if (m_instance == null)
             {
@@ -51,6 +56,7 @@ namespace Unity3DRavenCS {
                 }
 
                 m_instance.m_option = option == null ? new RavenOptionType() : option;
+                m_instance.m_sentryConfig = sentryConfig == null ? new SentryConfig() : sentryConfig;
 
                 m_instance.Init();
 
@@ -61,6 +67,7 @@ namespace Unity3DRavenCS {
 		private DSN m_dsn;
 		private bool m_valid;
         private RavenOptionType m_option;
+        private SentryConfig m_sentryConfig;
 
         private List<HttpClient> m_requestList;
         private int m_lastIdx;
@@ -111,9 +118,9 @@ namespace Unity3DRavenCS {
         /// <param name="stackTrace"></param>
 		public void CaptureMessage(string message, LogType logType=LogType.Error, Dictionary<string, string> tags=null, string stackTrace=null)
 		{
-			if (m_valid) 
+			if (m_valid)
 			{
-				MessagePacket packet = new MessagePacket(message, logType, tags, stackTrace);
+				MessagePacket packet = new MessagePacket(m_sentryConfig, message, logType, tags, stackTrace);
 
 				Send(packet.ToJson());
 			}
@@ -130,7 +137,7 @@ namespace Unity3DRavenCS {
         {
             if (m_valid)
             {
-                MessagePacket packet = new MessagePacket(message, logType, tags, stackTrace);
+                MessagePacket packet = new MessagePacket(m_sentryConfig, message, logType, tags, stackTrace);
 
                 Send(packet.ToJson());
             }
@@ -156,7 +163,7 @@ namespace Unity3DRavenCS {
         {
             if (m_valid)
             {
-                ExceptionPacket packet = new ExceptionPacket(message, stackTrace, tags);
+                ExceptionPacket packet = new ExceptionPacket(m_sentryConfig, message, stackTrace, tags);
 
                 Send(packet.ToJson());
             }
@@ -172,7 +179,7 @@ namespace Unity3DRavenCS {
         {
             if (m_valid)
             {
-                ExceptionPacket packet = new ExceptionPacket(message, stackTrace, tags);
+                ExceptionPacket packet = new ExceptionPacket(m_sentryConfig, message, stackTrace, tags);
 
                 Send(packet.ToJson());
             }

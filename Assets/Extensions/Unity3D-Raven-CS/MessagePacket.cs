@@ -16,16 +16,6 @@ namespace Unity3DRavenCS
 
         [JsonProperty(PropertyName = "sdk")]
         protected SDK m_sdk = new SDK();
-        
-        public struct Device
-        {
-            public string name;
-            public string version;
-            public string build;
-        }
-
-        [JsonProperty(PropertyName = "device")]
-        protected Device m_device = new Device();
 
         [JsonProperty(PropertyName = "event_id")]
         protected string m_eventID;
@@ -35,10 +25,12 @@ namespace Unity3DRavenCS
         protected string m_timestamp;
         [JsonProperty(PropertyName = "platform")]
         protected string m_platform;
+        [JsonProperty(PropertyName = "release")]
+        protected string m_release;
         [JsonProperty(PropertyName = "tags")]
         protected Dictionary<string, string> m_tags;
 
-        public Packet(string message, Dictionary<string, string> tags)
+        public Packet(SentryConfig sentryConfig, string message, Dictionary<string, string> tags)
         {
             m_eventID = Guid.NewGuid().ToString("N");
             m_message = message;
@@ -46,9 +38,7 @@ namespace Unity3DRavenCS
             m_sdk.name = "Unity3D-Raven-CS";
             m_sdk.version = Version.VERSION;
             m_timestamp = DateTime.UtcNow.ToString("s");
-            m_device.name = "";
-            m_device.version = "0";
-            m_device.build = "";
+            m_release = sentryConfig.release;
             m_tags = tags;
         }
 
@@ -69,7 +59,7 @@ namespace Unity3DRavenCS
         private RavenStackTrace m_stacktrace;
 #pragma warning restore 0414
 
-        public MessagePacket(string message, LogType logType, Dictionary<string, string> tags, string stackTrace): base(message, tags)
+        public MessagePacket(SentryConfig sentryConfig, string message, LogType logType, Dictionary<string, string> tags, string stackTrace): base(sentryConfig, message, tags)
 		{
             m_level = ToLogLevelFromLogType(logType);
             if (!string.IsNullOrEmpty(stackTrace))
@@ -78,7 +68,7 @@ namespace Unity3DRavenCS
             }
 		}
 
-        public MessagePacket(string message, LogType logType, Dictionary<string, string> tags, System.Diagnostics.StackTrace stackTrace) : base(message, tags)
+        public MessagePacket(SentryConfig sentryConfig, string message, LogType logType, Dictionary<string, string> tags, System.Diagnostics.StackTrace stackTrace) : base(sentryConfig, message, tags)
         {
             this.m_level = ToLogLevelFromLogType(logType);
             if (stackTrace != null)
@@ -119,23 +109,22 @@ namespace Unity3DRavenCS
         private RavenException m_exception;
 #pragma warning restore 0414
 
-        public ExceptionPacket(Exception exception, Dictionary<string, string> tags): base(exception.Message, tags)
+        public ExceptionPacket(SentryConfig sentryConfig, Exception exception, Dictionary<string, string> tags): base(sentryConfig, exception.Message, tags)
         {
             this.m_exception = new RavenException(exception);
         }
 
-        public ExceptionPacket(string message, string stackTrace, Dictionary<string, string> tags) : base(message, tags)
+        public ExceptionPacket(SentryConfig sentryConfig, string message, string stackTrace, Dictionary<string, string> tags) : base(sentryConfig, message, tags)
         {
             this.m_exception = new RavenException(message, stackTrace);
         }
 
-        public ExceptionPacket(string message, System.Diagnostics.StackTrace stackTrace, Dictionary<string, string> tags) : base(message, tags)
+        public ExceptionPacket(SentryConfig sentryConfig, string message, System.Diagnostics.StackTrace stackTrace, Dictionary<string, string> tags) : base(sentryConfig, message, tags)
         {
             this.m_exception = new RavenException(message, stackTrace);
         }
     }
 
-    
 	public struct ResponsePacket
 	{
 		public string id;
