@@ -29,6 +29,8 @@ namespace Unity3DRavenCS
         protected string m_release;
         [JsonProperty(PropertyName = "tags")]
         protected Dictionary<string, string> m_tags;
+        [JsonProperty(PropertyName = "fingerprint")]
+        protected List<string> m_fingerprint;
 
         public Packet(SentryConfig sentryConfig, string message, Dictionary<string, string> tags)
         {
@@ -40,6 +42,20 @@ namespace Unity3DRavenCS
             m_timestamp = DateTime.UtcNow.ToString("s");
             m_release = sentryConfig.release;
             m_tags = tags;
+            m_fingerprint = GetFingerPrint(message);
+        }
+
+        private List<string> GetFingerPrint(string message)
+        {
+            string messageFirstLine = message;
+
+            if (messageFirstLine.Contains("\n"))
+            {
+                messageFirstLine = message.Substring(0, message.IndexOf('\n'));
+            }
+
+            string[] fingerprint = { "{{ default }}", messageFirstLine};
+            return new List<string>(fingerprint);
         }
 
         public virtual string ToJson()
